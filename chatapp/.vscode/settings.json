@@ -1,0 +1,17 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cSpell.words": [
+        "chatapp",
+        "connectiontimeout",
+        "jdbc",
+        "jjwt",
+        "jsonwebtoken",
+        "mapstruct",
+        "pdfbox",
+        "projectlombok",
+        "springframework",
+        "starttls",
+        "tika",
+        "writetimeout"
+    ]
+}
