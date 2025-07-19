@@ -13,6 +13,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/applicant/**").permitAll()
+                        .requestMatchers("/api/company/**").permitAll()
+                        .requestMatchers("/api/jobpost/**").permitAll()
+                        .requestMatchers("/api/application/**").permitAll()
                         .anyRequest().authenticated())
                 .cors().and();
         return http.build();

@@ -1,16 +1,20 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
     "cSpell.words": [
+        "applay",
+        "Campany",
         "chatapp",
         "connectiontimeout",
         "jdbc",
         "jjwt",
+        "jobpost",
         "jsonwebtoken",
         "mapstruct",
         "pdfbox",
         "projectlombok",
         "springframework",
         "starttls",
+        "Successfull",
         "tika",
         "writetimeout"
     ]

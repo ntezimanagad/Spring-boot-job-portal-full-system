@@ -16,37 +16,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.learn.chatapp.dto.ApplicantDto;
+import com.learn.chatapp.dto.JobApplicationDto;
 import com.learn.chatapp.response.ApiResponse;
-import com.learn.chatapp.services.ApplicantService;
+import com.learn.chatapp.services.JobApplicationService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/applicant")
-public class ApplicantController {
-    private final ApplicantService applicantService;
+@RequestMapping("/api/application")
+public class JobApplicationController {
+    private final JobApplicationService jApplicationService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createApplicant(@RequestBody ApplicantDto applicantDto) {
-        applicantService.createApplicant(applicantDto);
-        return ResponseEntity.ok("created");
+    public ResponseEntity<ApiResponse<JobApplicationDto>> apply(@RequestBody JobApplicationDto jDto) {
+        JobApplicationDto dto = jApplicationService.applay(jDto);
+        return ResponseEntity.ok(
+                ApiResponse.<JobApplicationDto>builder()
+                        .status("success")
+                        .message("successfull")
+                        .data(dto)
+                        .build());
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<ApplicantDto>> update(
-            @RequestBody ApplicantDto applicantDto,
+    public ResponseEntity<ApiResponse<JobApplicationDto>> update(
+            @RequestBody JobApplicationDto jobApplicationDto,
             @PathVariable Long id) {
 
         System.out.println("Updating applicant with ID: " + id);
-        ApplicantDto updatedDto = applicantService.updateApplicant(applicantDto, id);
-        System.out.println("Updated data: " + updatedDto);
+        JobApplicationDto jobApplicationDto2 = jApplicationService.update(jobApplicationDto, id);
+        System.out.println("Updated data: " + jobApplicationDto2);
 
-        ApiResponse<ApplicantDto> response = ApiResponse.<ApplicantDto>builder()
+        ApiResponse<JobApplicationDto> response = ApiResponse.<JobApplicationDto>builder()
                 .status("success")
                 .message("Update successful")
-                .data(updatedDto)
+                .data(jobApplicationDto2)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -54,21 +59,21 @@ public class ApplicantController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        applicantService.deleteApplicant(id);
+        jApplicationService.delete(id);
         return ResponseEntity.ok("Deleted");
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<ApplicantDto>> getAll() {
-        return ResponseEntity.ok(applicantService.getApplicant());
+    public ResponseEntity<List<JobApplicationDto>> getAll() {
+        return ResponseEntity.ok(jApplicationService.getApplication());
     }
 
     @GetMapping("/page")
-    public ResponseEntity<Page<ApplicantDto>> getAllByPage(
+    public ResponseEntity<Page<JobApplicationDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ApplicantDto> page2 = applicantService.getApplicant(pageable);
+        Page<JobApplicationDto> page2 = jApplicationService.getApplication(pageable);
         return ResponseEntity.ok(page2);
     }
 }

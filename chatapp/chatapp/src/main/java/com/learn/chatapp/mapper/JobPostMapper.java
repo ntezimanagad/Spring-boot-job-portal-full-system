@@ -12,4 +12,7 @@ public interface JobPostMapper {
 
     @Mapping(source = "companyId", target = "company.id")
     JobPost toEntity(JobPostDto jobPostDto);
+
+    @Mapping(target = "company", ignore = true)
+    void update(JobPostDto jPostDto, @MappingTarget JobPost jobPost);
 }

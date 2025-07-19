@@ -19,6 +19,5 @@ public class JobApplicationDto {
     private Long jobPostId;
     @Builder.Default
     private LocalDateTime appliedAt = LocalDateTime.now();
-    @Builder.Default
-    private ApplicationStatus status = ApplicationStatus.PENDING;
+    private ApplicationStatus status;
 }
