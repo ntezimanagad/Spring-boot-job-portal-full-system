@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private String status; // "success", "error", etc.
-    private String message; // optional message
-    private T data; // actual payload
+    private String status;
+    private String message;
+    private T data;
 }

@@ -38,19 +38,12 @@ public class ApplicantService {
 
     @Transactional
     public ApplicantDto updateApplicant(ApplicantDto dto, Long id) {
-        // Load existing applicant from DB
         Applicant applicant = applicantRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Applicant Not Found"));
 
-        // Map only fields that are allowed to change
         applicantMapper.update(dto, applicant);
+        applicant.setId(id);
 
-        // Optional: ensure the ID remains consistent
-        applicant.setId(id); // in case of mismatch
-        // applicant.setUser(applicant.getUser()); // not needed, just ensure you don't
-        // nullify
-
-        // Save updated entity
         applicant = applicantRepository.save(applicant);
 
         return applicantMapper.toDto(applicant);
