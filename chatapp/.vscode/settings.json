@@ -10,6 +10,7 @@
         "jobpost",
         "jsonwebtoken",
         "mapstruct",
+        "Passsword",
         "pdfbox",
         "projectlombok",
         "springframework",
