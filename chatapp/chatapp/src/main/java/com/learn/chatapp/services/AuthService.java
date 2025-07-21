@@ -34,16 +34,21 @@ public class AuthService {
         otpService.generateOtp(request.getEmail(), "REGISTER");
     }
 
-    public UserDto confirmRegistration(UserRequest request) {
-        boolean validOtp = otpService.validateOtp(request.getEmail(), request.getOtpCode(), "REGISTER");
+    public UserDto confirmRegistration(UserRequest request, String otpCode) {
+        boolean validOtp = otpService.validateOtp(request.getEmail(), otpCode, "REGISTER");
         if (!validOtp) {
             throw new InvalidOtpException("OTP expired or invalid");
         }
         otpService.deleteOtp(request.getEmail(), "REGISTER");
 
         User user = new User();
+        user.setName(request.getName());
         user.setEmail(request.getEmail());
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
         user.setRole(Role.APPLICANT);
         user = userRepository.save(user);
 
@@ -63,8 +68,8 @@ public class AuthService {
     }
 
     // Validate login OTP and generate JWT token
-    public String confirmLogin(UserRequest request) {
-        boolean validOtp = otpService.validateOtp(request.getEmail(), request.getOtpCode(), "LOGIN");
+    public String confirmLogin(UserRequest request, String otpCode) {
+        boolean validOtp = otpService.validateOtp(request.getEmail(), otpCode, "LOGIN");
         if (!validOtp) {
             throw new RuntimeException("OTP expired or invalid");
         }

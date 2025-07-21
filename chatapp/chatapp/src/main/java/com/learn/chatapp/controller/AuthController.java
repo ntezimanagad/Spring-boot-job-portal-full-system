@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class AuthController {
 
     private final AuthService authService;
@@ -30,8 +31,10 @@ public class AuthController {
     }
 
     @PostMapping("/confirm-registration")
-    public ResponseEntity<ApiResponse<UserDto>> confirmRegistration(@RequestBody UserRequest request) {
-        UserDto userDto = authService.confirmRegistration(request);
+    public ResponseEntity<ApiResponse<UserDto>> confirmRegistration(
+            @RequestBody UserRequest request,
+            @RequestParam String otpCode) {
+        UserDto userDto = authService.confirmRegistration(request, otpCode);
         ApiResponse<UserDto> response = ApiResponse.<UserDto>builder()
                 .status("success")
                 .message("User registered successfully")
@@ -51,14 +54,22 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // @PostMapping("/confirm-login")
+    // public ResponseEntity<ApiResponse<String>> confirmLogin(
+    // @RequestBody UserRequest request,
+    // @RequestParam String otpCode) {
+    // String jwtToken = authService.confirmLogin(request, otpCode);
+    // ApiResponse<String> response = ApiResponse.<String>builder()
+    // .status("success")
+    // .message("Login successful")
+    // .data(jwtToken)
+    // .build();
+    // return ResponseEntity.status(HttpStatus.OK).body(response);
+    // }
     @PostMapping("/confirm-login")
-    public ResponseEntity<ApiResponse<String>> confirmLogin(@RequestBody UserRequest request) {
-        String jwtToken = authService.confirmLogin(request);
-        ApiResponse<String> response = ApiResponse.<String>builder()
-                .status("success")
-                .message("Login successful")
-                .data(jwtToken)
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<?> confirmLogin(
+            @RequestBody UserRequest request,
+            @RequestParam String otpCode) {
+        return ResponseEntity.ok(authService.confirmLogin(request, otpCode));
     }
 }

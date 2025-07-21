@@ -1,12 +1,16 @@
 package com.learn.chatapp.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.chatapp.dto.CompanyDto;
+import com.learn.chatapp.exception.UserNotFoundException;
+import com.learn.chatapp.mapper.CampanyMapper;
+import com.learn.chatapp.model.Company;
+import com.learn.chatapp.model.User;
+import com.learn.chatapp.repository.CompanyRepository;
+import com.learn.chatapp.repository.UserRepository;
 import com.learn.chatapp.response.ApiResponse;
 import com.learn.chatapp.services.CompanyService;
 
@@ -28,6 +38,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/company")
 public class CompanyController {
     private final CompanyService companyService;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final CampanyMapper mapper;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<CompanyDto>> createCompany(@RequestBody CompanyDto companyDto) {
@@ -84,4 +97,22 @@ public class CompanyController {
         return ResponseEntity.ok(page2);
     }
 
+    @GetMapping("/company") // optional if you're missing an endpoint mapping
+    public ResponseEntity<CompanyDto> getCompanyByLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // Get the user
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // Get the company using user ID (assuming company.id == user.id)
+        Company company = companyRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("Company not found for user ID: " + user.getId()));
+
+        // Map entity to DTO
+        CompanyDto companyDto = mapper.toDto(company);
+
+        return ResponseEntity.ok(companyDto);
+    }
 }

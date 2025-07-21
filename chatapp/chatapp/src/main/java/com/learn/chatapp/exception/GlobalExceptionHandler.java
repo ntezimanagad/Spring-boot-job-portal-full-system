@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
         }
 
         @ExceptionHandler(InvalidOtpException.class)
-        public ResponseEntity<ApiResponse<String>> handleUserNotFound(InvalidOtpException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        public ResponseEntity<ApiResponse<String>> handleInvalidOtp(InvalidOtpException e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                                 ApiResponse.<String>builder()
                                                 .status("error")
                                                 .message(e.getMessage())

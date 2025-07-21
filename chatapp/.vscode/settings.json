@@ -9,14 +9,19 @@
         "jjwt",
         "jobpost",
         "jsonwebtoken",
+        "lxzb",
         "mapstruct",
         "Passsword",
         "pdfbox",
         "projectlombok",
+        "spgk",
         "springframework",
         "starttls",
         "Successfull",
         "tika",
-        "writetimeout"
-    ]
+        "uyzo",
+        "writetimeout",
+        "xjwr"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }

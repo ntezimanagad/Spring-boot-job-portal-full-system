@@ -25,6 +25,8 @@ public class OtpService {
         Instant now = Instant.now();
         Instant expired = now.plus(EXPIRE_IN, ChronoUnit.MINUTES);
 
+        deleteOtp(email, Purpose);
+
         Otp otp = new Otp(null, email, otpCode, now, expired, Purpose);
 
         otpRepository.save(otp);

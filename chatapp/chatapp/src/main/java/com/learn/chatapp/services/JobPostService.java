@@ -39,6 +39,7 @@ public class JobPostService {
                 .orElseThrow(() -> new CampanyNotFoundException("campany not found"));
         jMapper.update(jobPostDto, jobPost);
         jobPost.setId(id);
+        jobPost.setCompany(jobPost.getCompany());
         jobPost = jRepository.save(jobPost);
         return jMapper.toDto(jobPost);
     }
