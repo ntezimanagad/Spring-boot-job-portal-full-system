@@ -1,7 +1,6 @@
 package com.learn.chatapp.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,6 +69,24 @@ public class JobPostController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/updatestatus/{id}")
+    public ResponseEntity<ApiResponse<JobPostDto>> updateStatus(
+            @RequestBody JobPostDto jobPostDto,
+            @PathVariable Long id) {
+
+        System.out.println("Updating applicant with ID: " + id);
+        JobPostDto jobPostDto2 = jPostService.updateStatus(jobPostDto, id);
+        System.out.println("Updated data: " + jobPostDto2);
+
+        ApiResponse<JobPostDto> response = ApiResponse.<JobPostDto>builder()
+                .status("success")
+                .message("Update successful")
+                .data(jobPostDto2)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         jPostService.deleteJobPost(id);
@@ -102,11 +119,37 @@ public class JobPostController {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        // Correct repository method
         Page<JobPost> jobPost = jPostRepository.findByCompanyId(user.getId(), pageable);
 
         Page<JobPostDto> jPage = jobPost.map(jMapper::toDto);
         return ResponseEntity.ok(jPage);
+    }
+
+    @GetMapping("/application")
+    public ResponseEntity<?> getAllApprovedJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<JobPost> jobPosts = jPostRepository.findByIsApproved("APPROVED", pageable);
+
+        Page<JobPostDto> jobDtos = jobPosts.map(jMapper::toDto);
+
+        return ResponseEntity.ok(jobDtos);
+    }
+
+    @GetMapping("/findall")
+    public ResponseEntity<?> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<JobPost> jobPosts = jPostRepository.findAll(pageable);
+
+        Page<JobPostDto> jobDtos = jobPosts.map(jMapper::toDto);
+
+        return ResponseEntity.ok(jobDtos);
     }
 
 }

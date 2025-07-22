@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-function ApplicantDashboard() {
+function ApplicantApplication() {
   const [info, setInfo] = useState([]);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
@@ -48,10 +48,9 @@ function ApplicantDashboard() {
   }, []);
 
   useEffect(() => {
-    //const token = localStorage.getItem("token");
 
     axios
-      .get("http://localhost:8080/api/jobpost/application", {
+      .get("http://localhost:8080/api/application/myapplication", {
         params: { page, size },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,13 +65,12 @@ function ApplicantDashboard() {
   return (
     <div>
         <Link to="/asetting">Go to setting</Link>
-        <Link to="/viewapplication">My Application</Link>
+        <Link to="/adashboard">Home</Link>
       <ul>
         {Array.isArray(info) && info.length > 0 ? (
           info.map((index, i) => (
             <li key={i}>
-              {index.title || "No Title"} - {index.isApproved || "Pending"}
-              <button onClick={() => handleJobCreation(index.id)}>Apply</button>
+              {index.applicantId || "No Title"} - {index.jobPostId || "Pending"} - {index.status || "Pending"}
             </li>
           ))
         ) : (
@@ -83,4 +81,4 @@ function ApplicantDashboard() {
   );
 }
 
-export default ApplicantDashboard;
+export default ApplicantApplication;

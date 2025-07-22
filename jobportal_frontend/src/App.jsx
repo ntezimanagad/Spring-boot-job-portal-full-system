@@ -7,6 +7,8 @@ import CompanySetting from './pages/CompanySetting'
 import CompanyDashboard from './pages/CompanyDashboard'
 import ApplicantSetting from './pages/ApplicantSetting'
 import ApplicantDashboard from './pages/ApplicantDashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import ApplicantApplication from './pages/ApplicantApplication'
 
 function App() {
 
@@ -20,6 +22,8 @@ function App() {
           <Route path="/cdashboard" element={<PrivateRoute role="COMPANY"><CompanyDashboard/></PrivateRoute>}/>
           <Route path="/asetting" element={<PrivateRoute role="APPLICANT"><ApplicantSetting/></PrivateRoute>}/>
           <Route path="/adashboard" element={<PrivateRoute role="APPLICANT"><ApplicantDashboard/></PrivateRoute>}/>
+          <Route path="/admin" element={<PrivateRoute role="ADMIN"><AdminDashboard/></PrivateRoute>}/>
+          <Route path="/viewapplication" element={<PrivateRoute role="APPLICANT"><ApplicantApplication/></PrivateRoute>}/>
         </Routes>
       </Router>
     </>

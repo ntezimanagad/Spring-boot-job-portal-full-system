@@ -49,7 +49,7 @@ public class AuthService {
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setRole(Role.APPLICANT);
+        user.setRole(Role.ADMIN);
         user = userRepository.save(user);
 
         return mapper.toDto(user);

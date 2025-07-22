@@ -1,8 +1,6 @@
 package com.learn.chatapp.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,20 +95,16 @@ public class CompanyController {
         return ResponseEntity.ok(page2);
     }
 
-    @GetMapping("/company") // optional if you're missing an endpoint mapping
     public ResponseEntity<CompanyDto> getCompanyByLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
-        // Get the user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // Get the company using user ID (assuming company.id == user.id)
         Company company = companyRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("Company not found for user ID: " + user.getId()));
 
-        // Map entity to DTO
         CompanyDto companyDto = mapper.toDto(company);
 
         return ResponseEntity.ok(companyDto);

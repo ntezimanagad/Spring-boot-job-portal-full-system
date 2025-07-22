@@ -12,4 +12,8 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long> {
 
     Page<JobPost> findByCompanyId(Long id, Pageable pageable);
 
+    Page<JobPost> findByIsApprovedTrue(Pageable pageable);
+
+    Page<JobPost> findByIsApproved(String string, Pageable pageable);
+
 }

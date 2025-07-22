@@ -3,5 +3,6 @@ package com.learn.chatapp.model;
 public enum Role {
     USER,
     APPLICANT,
-    COMPANY
+    COMPANY,
+    ADMIN
 }

@@ -44,6 +44,15 @@ public class JobPostService {
         return jMapper.toDto(jobPost);
     }
 
+    public JobPostDto updateStatus(JobPostDto jobPostDto, Long id) {
+        JobPost jobPost = jRepository.findById(id)
+                .orElseThrow(() -> new CampanyNotFoundException("campany not found"));
+        jobPost.setId(id);
+        jobPost.setIsApproved(jobPostDto.getIsApproved());
+        jobPost = jRepository.save(jobPost);
+        return jMapper.toDto(jobPost);
+    }
+
     public void deleteJobPost(Long id) {
         Optional<JobPost> jobPost = jRepository.findById(id);
         if (jobPost.isPresent()) {

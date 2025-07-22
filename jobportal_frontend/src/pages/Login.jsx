@@ -56,9 +56,11 @@ function Login() {
 
     if (userRole === "COMPANY") {
       navigate("/cdashboard");
-    } else {
+    } else if (userRole === "APPLICANT"){
       navigate("/adashboard");
       alert("Successfully Logged In as User");
+    }else{
+      navigate("/admin");
     }
   } catch (error) {
     console.log("Login failed", error);
