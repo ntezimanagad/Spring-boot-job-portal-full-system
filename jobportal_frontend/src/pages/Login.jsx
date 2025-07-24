@@ -48,7 +48,7 @@ function Login() {
       { email }
     );
 
-    const token = res.data; // ✅ extract only JWT
+    const token = res.data;
     localStorage.setItem("token", token);
 
     const decoded = jwtDecode(token);

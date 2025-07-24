@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function ApplicantSetting() {
+function CreateApplicantInfo() {
   const token = localStorage.getItem("token");
   const [userId, setUserId] = useState("");
   const [fullName, setFullName] = useState("");
@@ -12,6 +12,7 @@ function ApplicantSetting() {
   const [experience, setExperience] = useState("");
   const [skills, setSkills] = useState("");
   const [resumePath, setResumePath] = useState("");
+  const navigate = useNavigate()
 
   const handleLoggedInUser = async () => {
     const res = await axios.get("http://localhost:8080/api/user/getUserInfo", {
@@ -26,51 +27,13 @@ function ApplicantSetting() {
     handleLoggedInUser();
   });
 
-  useEffect(() => {
-  const fetchUserAndApplicant = async () => {
-    try {
-      const res = await axios.get("http://localhost:8080/api/user/getUserInfo", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const id = res.data.id;
-      setUserId(id);
-
-      const applicantRes = await axios.get(
-        `http://localhost:8080/api/applicant/getapplicantbyid/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = applicantRes.data;
-      setFullName(data.fullName || "");
-      setPhone(data.phone || "");
-      setLocation(data.location || "");
-      setEducation(data.education || "");
-      setExperience(data.experience || "");
-      setSkills(data.skills || "");
-      setResumePath(data.resumePath || "");
-    } catch (err) {
-      console.error("Failed to fetch user/applicant:", err);
-    }
-  };
-
-  fetchUserAndApplicant();
-}, []);
-
-
-  
-
-  const handleApplicantUpdate = async (e) => {
+  const handleApplicant = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(
-        `http://localhost:8080/api/applicant/update/${userId}`,
+      const res = await axios.post(
+        "http://localhost:8080/api/applicant/create",
         {
+          userId,
           fullName,
           phone,
           location,
@@ -85,17 +48,18 @@ function ApplicantSetting() {
           },
         }
       );
-      alert("Applicant profile Updated Successfull");
+      alert("Applicant profile created Successfull");
+      navigate("/login")
     } catch (error) {
       console.log("error", error);
     }
   };
 
+  
+
   return (
     <div>
-      <Link to="/adashboard">Go to Home</Link>
-      <Link to="/viewapplication">My Application</Link>
-      <h2>Update Applicant</h2>
+      <h2>Applicant Information</h2>
       <form>
         <div>
           <label>Full Name</label>
@@ -158,10 +122,10 @@ function ApplicantSetting() {
           <label>User Id</label>
           <input value={userId} readOnly />
         </div> */}
-        <button onClick={handleApplicantUpdate}>Update</button>
+        <button onClick={handleApplicant}>create</button>
       </form>
     </div>
   );
 }
 
-export default ApplicantSetting;
+export default CreateApplicantInfo;

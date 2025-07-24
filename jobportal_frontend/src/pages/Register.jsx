@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function Register() {
   const [name, setName] = useState("");
@@ -11,7 +12,7 @@ function Register() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(60);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (otpSent && timer) {
@@ -33,14 +34,14 @@ function Register() {
       const res = await axios.post("http://localhost:8080/api/auth/register", {
         name,
         email,
-        password
+        password,
       });
       alert("Otp sent check your email");
       setOtpSent(true);
     } catch (error) {
-        console.log("failed",error)
-    } finally{
-        setLoading(false)
+      console.log("failed", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,18 +49,32 @@ function Register() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`http://localhost:8080/api/auth/confirm-registration?otpCode=${otpCode}`, {
-        name,
-        email,
-        password
-      });
-      alert("Successfull Registered");
-      navigate("/login")
-      ///setOtpSent(true);
+      const res = await axios.post(
+        `http://localhost:8080/api/auth/confirm-registration?otpCode=${otpCode}`,
+        {
+          name,
+          email,
+          password,
+        }
+      );
+      const token = res.data;
+      localStorage.setItem("token", token);
+
+      const decoded = jwtDecode(token);
+      const userRole = decoded.role;
+
+      if (userRole === "COMPANY") {
+        navigate("/companyinfo");
+      } else if (userRole === "APPLICANT") {
+        alert("Successfully Registered In as User");
+        navigate("/applicantinfo");
+      } else {
+        navigate("/admin");
+      }
     } catch (error) {
-        console.log("failed",error)
-    }finally{
-        setLoading(false)
+      console.log("failed", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,9 +118,7 @@ function Register() {
               <input
                 type="text"
                 value={cpassword}
-                onChange={(e) =>
-                  setCPassword(e.target.value)
-                }
+                onChange={(e) => setCPassword(e.target.value)}
               />
             </div>
           </div>
@@ -113,7 +126,6 @@ function Register() {
             <button onClick={handleRegister} disabled={loading}>
               {loading ? "Sending OTP....." : "Register"}
             </button>
-            
           </div>
         </>
       ) : (
@@ -124,9 +136,7 @@ function Register() {
               <input
                 type="text"
                 value={otpCode}
-                onChange={(e) =>
-                  setOtp(e.target.value)
-                }
+                onChange={(e) => setOtp(e.target.value)}
               />
             </div>
           </div>
@@ -134,18 +144,16 @@ function Register() {
             <button onClick={handleRegisterValidation} disabled={loading}>
               {loading ? "Verfying OTP....." : "Verfy"}
             </button>
-            {
-                timer > 0 ? (
-                    <p>resent OTP in {timer} second</p>
-                ) : (
-                    <button onClick={handleResentOtp}>Resend</button>
-                )
-            }
+            {timer > 0 ? (
+              <p>resent OTP in {timer} second</p>
+            ) : (
+              <button onClick={handleResentOtp}>Resend</button>
+            )}
           </div>
         </>
       )}
     </div>
-  )
+  );
 }
 
 export default Register;

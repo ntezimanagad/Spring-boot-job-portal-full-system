@@ -63,6 +63,12 @@ public class ApplicantService {
                 .toList();
     }
 
+    public ApplicantDto getApplicant(Long id) {
+        Applicant applicant = applicantRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return applicantMapper.toDto(applicant);
+    }
+
     public Page<ApplicantDto> getApplicant(Pageable pageable) {
         return applicantRepository.findAll(pageable)
                 .map(applicantMapper::toDto);

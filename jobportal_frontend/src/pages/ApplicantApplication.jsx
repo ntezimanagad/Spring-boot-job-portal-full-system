@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 function ApplicantApplication() {
   const [info, setInfo] = useState([]);
+  const [jobInfo, setJobInfo] = useState([]);
+  const [applicantInfo, setApplicantInfo] = useState([]);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
   const token = localStorage.getItem("token");
@@ -23,21 +25,40 @@ function ApplicantApplication() {
     setApplicant(res.data.id);
   };
 
-  const handleJobCreation = async (jobId) => {
-    try {
-      const res = await axios.post(
-        `http://localhost:8080/api/application/create`,
-        {
-          applicantId,
-          jobPostId: jobId,
-          status,
+  const getApplicantById = async (id) => {
+    const res = await axios(
+      `http://localhost:8080/api/applicant/getapplicantbyid/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
+      }
+    );
+    setApplicantInfo([res.data]);
+  };
+
+  const getJobById = async (id) => {
+    const res = await axios(
+      `http://localhost:8080/api/jobpost/getjobbyid/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setJobInfo([res.data]);
+  };
+
+  const deleteApplication = async (jobId) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/application/delete/${jobid}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      alert("Application Sent successfully");
+      alert("Application Deleted successfully");
     } catch (error) {
       console.error("Error:", error);
     }
@@ -48,7 +69,6 @@ function ApplicantApplication() {
   }, []);
 
   useEffect(() => {
-
     axios
       .get("http://localhost:8080/api/application/myapplication", {
         params: { page, size },
@@ -64,13 +84,47 @@ function ApplicantApplication() {
 
   return (
     <div>
-        <Link to="/asetting">Go to setting</Link>
-        <Link to="/adashboard">Home</Link>
+      <Link to="/asetting">Go to setting</Link>
+      <Link to="/adashboard">Home</Link>
       <ul>
         {Array.isArray(info) && info.length > 0 ? (
           info.map((index, i) => (
             <li key={i}>
-              {index.applicantId || "No Title"} - {index.jobPostId || "Pending"} - {index.status || "Pending"}
+              {index.applicantId} - {index.jobPostId} - {index.appliedAt} -{" "}
+              {index.status}
+              <button onClick={() => getApplicantById(index.applicantId)}>
+                Applicant Info
+              </button>{" "}
+              -
+              <button onClick={() => getJobById(index.jobPostId)}>
+                Job Info
+              </button>
+              
+            </li>
+          ))
+        ) : (
+          <li>No job posts found.</li>
+        )}
+      </ul>
+      <ul>
+        {Array.isArray(jobInfo) && info.length > 0 ? (
+          jobInfo.map((index, i) => (
+            <li key={i}>
+              {index.title} - {index.description} - {index.requirements} -{" "}
+              {index.location}
+            </li>
+          ))
+        ) : (
+          <li>No job posts found.</li>
+        )}
+      </ul>
+      <ul>
+        {Array.isArray(applicantInfo) && info.length > 0 ? (
+          applicantInfo.map((index, i) => (
+            <li key={i}>
+              {index.fullName} - {index.phone} - {index.location} -{" "}
+              {index.education}- {index.experience} - {index.skills} -{" "}
+              {index.resumePath}
             </li>
           ))
         ) : (

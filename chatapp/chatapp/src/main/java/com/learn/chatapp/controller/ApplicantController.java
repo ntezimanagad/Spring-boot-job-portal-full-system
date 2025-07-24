@@ -63,6 +63,11 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.getApplicant());
     }
 
+    @GetMapping("/getapplicantbyid/{id}")
+    public ResponseEntity<ApplicantDto> getJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(applicantService.getApplicant(id));
+    }
+
     @GetMapping("/page")
     public ResponseEntity<Page<ApplicantDto>> getAllByPage(
             @RequestParam(defaultValue = "0") int page,

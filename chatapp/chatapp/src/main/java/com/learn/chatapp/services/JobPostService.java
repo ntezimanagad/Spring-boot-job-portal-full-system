@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.learn.chatapp.dto.JobPostDto;
 import com.learn.chatapp.exception.CampanyNotFoundException;
+import com.learn.chatapp.exception.UserNotFoundException;
 import com.learn.chatapp.mapper.JobPostMapper;
 import com.learn.chatapp.model.Company;
 import com.learn.chatapp.model.JobPost;
@@ -65,6 +66,12 @@ public class JobPostService {
                 .stream()
                 .map(jMapper::toDto)
                 .toList();
+    }
+
+    public JobPostDto getJobById(Long id) {
+        JobPost jPost = jRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Job not found"));
+        return jMapper.toDto(jPost);
     }
 
     public Page<JobPostDto> getPost(Pageable pageable) {

@@ -21,7 +21,7 @@ public class OtpService {
     private static final int EXPIRE_IN = 5;
 
     public void generateOtp(String email, String Purpose) {
-        String otpCode = String.format("%6d", new Random().nextInt(999999));
+        String otpCode = String.format("%06d", new Random().nextInt(1000000));
         Instant now = Instant.now();
         Instant expired = now.plus(EXPIRE_IN, ChronoUnit.MINUTES);
 

@@ -8,6 +8,7 @@ function CompanyDashboard() {
   const [size, setSize] = useState(5);
   const token = localStorage.getItem("token");
   const [companyId, setCompanyId] = useState("");
+  const [id, setJobPost] = useState("")
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requirements, setRequirement] = useState("");
@@ -25,7 +26,7 @@ function CompanyDashboard() {
 
   useEffect(() => {
     handleLoggedInUser();
-  },[]);
+  }, []);
 
   useEffect(() => {
     //const token = localStorage.getItem("token");
@@ -42,6 +43,33 @@ function CompanyDashboard() {
         console.error("Error fetching company posts:", err);
       });
   }, [page, size]);
+
+  const handleJobPostDelete = async (id) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/jobpost/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Job Deleted Successfull");
+      axios
+      .get("http://localhost:8080/api/jobpost/company_post", {
+        params: { page, size },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setInfo(res.data.content))
+      .catch((err) => {
+        console.error("Error fetching company posts:", err);
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const handleJobPost = async (e) => {
     e.preventDefault();
@@ -63,6 +91,53 @@ function CompanyDashboard() {
         }
       );
       alert("Job created Successfull");
+      axios
+      .get("http://localhost:8080/api/jobpost/company_post", {
+        params: { page, size },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setInfo(res.data.content))
+      .catch((err) => {
+        console.error("Error fetching company posts:", err);
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleJobPostUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(
+        `http://localhost:8080/api/jobpost/update/${id}`,
+        {
+          companyId,
+          title,
+          description,
+          requirements,
+          location,
+          isApproved,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Job Updated Successfull");
+      axios
+      .get("http://localhost:8080/api/jobpost/company_post", {
+        params: { page, size },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setInfo(res.data.content))
+      .catch((err) => {
+        console.error("Error fetching company posts:", err);
+      });
     } catch (error) {
       console.log("error", error);
     }
@@ -71,6 +146,7 @@ function CompanyDashboard() {
   return (
     <div>
       <Link to="/csetting">Go to setting</Link>
+      <Link to="/appliedJob">Applied Job</Link>
       <h2>Update Suggestion</h2>
       <form>
         <div>
@@ -110,22 +186,35 @@ function CompanyDashboard() {
           <label>User Id</label>
           <input value={userId} readOnly />
         </div> */}
-        {/* <button onClick={handleCompanyUpdate}>Update</button> */}
+        <button onClick={handleJobPostUpdate}>Update</button>
         <button onClick={handleJobPost}>create</button>
       </form>
       <div>
         <ul>
-  {Array.isArray(info) && info.length > 0 ? (
-    info.map((index, i) => (
-      <li key={i}>
-        {index.title || "No Title"} - {index.isApproved || "Pending"}
-      </li>
-    ))
-  ) : (
-    <li>No job posts found.</li>
-  )}
-</ul>
-
+          {Array.isArray(info) && info.length > 0 ? (
+            info.map((index, i) => (
+              <li key={i}>
+                {index.title || "No Title"} - {index.description || "No description"} -{" "}
+                {index.requirements || "No requirement"} -{" "}
+                {index.isApproved || "Pending"}
+                <button onClick={() =>{
+                  setTitle(index.title)
+                  setDescription(index.description)
+                  setRequirement(index.requirements)
+                  setLocation(index.location)
+                  setJobPost(index.id)}
+                } >
+                  Update
+                </button>
+                <button onClick={() => handleJobPostDelete(index.id)} >
+                  delete
+                </button>
+              </li>
+            ))
+          ) : (
+            <li>No job posts found.</li>
+          )}
+        </ul>
       </div>
     </div>
   );

@@ -9,6 +9,9 @@ import ApplicantSetting from './pages/ApplicantSetting'
 import ApplicantDashboard from './pages/ApplicantDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import ApplicantApplication from './pages/ApplicantApplication'
+import AppliedApplicant from './pages/AppliedApplicant'
+import CreateApplicantInfo from './pages/CreateApplicantInfo'
+import CreateCompanyInfo from './pages/CreateCompanyInfo'
 
 function App() {
 
@@ -24,6 +27,9 @@ function App() {
           <Route path="/adashboard" element={<PrivateRoute role="APPLICANT"><ApplicantDashboard/></PrivateRoute>}/>
           <Route path="/admin" element={<PrivateRoute role="ADMIN"><AdminDashboard/></PrivateRoute>}/>
           <Route path="/viewapplication" element={<PrivateRoute role="APPLICANT"><ApplicantApplication/></PrivateRoute>}/>
+          <Route path="/appliedJob" element={<PrivateRoute role="COMPANY"><AppliedApplicant/></PrivateRoute>}/>
+          <Route path="/companyinfo" element={<PrivateRoute role="COMPANY"><CreateCompanyInfo/></PrivateRoute>}/>
+          <Route path="/applicantinfo" element={<PrivateRoute role="APPLICANT"><CreateApplicantInfo/></PrivateRoute>}/>
         </Routes>
       </Router>
     </>

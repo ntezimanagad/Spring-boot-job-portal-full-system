@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.learn.chatapp.dto.UserDto;
+//import com.learn.chatapp.dto.UserDto;
 import com.learn.chatapp.dto.UserRequest;
 import com.learn.chatapp.exception.DuplicateUserException;
 import com.learn.chatapp.exception.InvalidOtpException;
 import com.learn.chatapp.jwt.JwtUtil;
-import com.learn.chatapp.mapper.UserMapper;
+//import com.learn.chatapp.mapper.UserMapper;
 import com.learn.chatapp.model.Role;
 import com.learn.chatapp.model.User;
 import com.learn.chatapp.repository.UserRepository;
@@ -24,7 +24,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
-    private final UserMapper mapper;
+    // private final UserMapper mapper;
 
     public void registerUser(UserRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
@@ -34,7 +34,7 @@ public class AuthService {
         otpService.generateOtp(request.getEmail(), "REGISTER");
     }
 
-    public UserDto confirmRegistration(UserRequest request, String otpCode) {
+    public String confirmRegistration(UserRequest request, String otpCode) {
         boolean validOtp = otpService.validateOtp(request.getEmail(), otpCode, "REGISTER");
         if (!validOtp) {
             throw new InvalidOtpException("OTP expired or invalid");
@@ -49,10 +49,10 @@ public class AuthService {
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.APPLICANT);
         user = userRepository.save(user);
 
-        return mapper.toDto(user);
+        return jwtUtil.generateToken(user.getEmail(), user.getRole());
     }
 
     public void loginUser(UserRequest userDTO) {

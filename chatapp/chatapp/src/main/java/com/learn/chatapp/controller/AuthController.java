@@ -1,7 +1,7 @@
 package com.learn.chatapp.controller;
 
 import com.learn.chatapp.response.ApiResponse;
-import com.learn.chatapp.dto.UserDto;
+//import com.learn.chatapp.dto.UserDto;
 import com.learn.chatapp.dto.UserRequest;
 import com.learn.chatapp.services.AuthService;
 
@@ -31,16 +31,10 @@ public class AuthController {
     }
 
     @PostMapping("/confirm-registration")
-    public ResponseEntity<ApiResponse<UserDto>> confirmRegistration(
+    public ResponseEntity<?> confirmRegistration(
             @RequestBody UserRequest request,
             @RequestParam String otpCode) {
-        UserDto userDto = authService.confirmRegistration(request, otpCode);
-        ApiResponse<UserDto> response = ApiResponse.<UserDto>builder()
-                .status("success")
-                .message("User registered successfully")
-                .data(userDto)
-                .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.ok(authService.confirmRegistration(request, otpCode));
     }
 
     @PostMapping("/login")

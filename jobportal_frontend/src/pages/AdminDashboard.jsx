@@ -47,6 +47,17 @@ function AdminDashboard() {
     });
 
     alert("Approved successfully");
+    axios
+      .get("http://localhost:8080/api/jobpost/findall", {
+        params: { page, size },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setInfo(res.data.content))
+      .catch((err) => {
+        console.error("Error fetching company posts:", err);
+      });
   } catch (error) {
     console.error("Error:", error);
   }

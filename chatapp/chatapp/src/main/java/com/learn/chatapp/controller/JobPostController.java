@@ -138,6 +138,11 @@ public class JobPostController {
         return ResponseEntity.ok(jobDtos);
     }
 
+    @GetMapping("/getjobbyid/{id}")
+    public ResponseEntity<JobPostDto> getJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(jPostService.getJobById(id));
+    }
+
     @GetMapping("/findall")
     public ResponseEntity<?> findAll(
             @RequestParam(defaultValue = "0") int page,

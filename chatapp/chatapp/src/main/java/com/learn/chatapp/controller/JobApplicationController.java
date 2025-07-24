@@ -68,6 +68,20 @@ public class JobApplicationController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/updatestatus/{id}")
+    public ResponseEntity<ApiResponse<JobApplicationDto>> updateStatus(
+            @RequestBody JobApplicationDto jobApplicationDto,
+            @PathVariable Long id,
+            @RequestParam Long applicantId) {
+        JobApplicationDto jDto = jApplicationService.updateStatus(jobApplicationDto, id, applicantId);
+        ApiResponse<JobApplicationDto> response = ApiResponse.<JobApplicationDto>builder()
+                .status("success")
+                .message("successfull")
+                .data(jDto)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         jApplicationService.delete(id);
@@ -104,5 +118,23 @@ public class JobApplicationController {
 
         Page<JobApplicationDto> jPage = jobApp.map(jMapper::toDto);
         return ResponseEntity.ok(jPage);
+    }
+
+    @GetMapping("/appliedjob")
+    public ResponseEntity<?> getAllAppliedJob(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<JobApplication> jPage = jApplicationRepository.findByCampanyId(user.getId(), pageable);
+
+        Page<JobApplicationDto> jPage1 = jPage.map(jMapper::toDto);
+        return ResponseEntity.ok(jPage1);
     }
 }

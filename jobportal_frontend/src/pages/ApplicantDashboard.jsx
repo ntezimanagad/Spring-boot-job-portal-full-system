@@ -23,13 +23,15 @@ function ApplicantDashboard() {
     setApplicant(res.data.id);
   };
 
-  const handleJobCreation = async (jobId) => {
+  const handleJobCreation = async (jobId, companyId) => {
+    console.log(companyId)
     try {
       const res = await axios.post(
         `http://localhost:8080/api/application/create`,
         {
           applicantId,
           jobPostId: jobId,
+          campanyId: companyId,
           status,
         },
         {
@@ -71,8 +73,8 @@ function ApplicantDashboard() {
         {Array.isArray(info) && info.length > 0 ? (
           info.map((index, i) => (
             <li key={i}>
-              {index.title || "No Title"} - {index.isApproved || "Pending"}
-              <button onClick={() => handleJobCreation(index.id)}>Apply</button>
+              {index.title || "No Title"} - {index.companyId} - {index.isApproved || "Pending"}
+              <button onClick={() => handleJobCreation(index.id, index.companyId)}>Apply</button>
             </li>
           ))
         ) : (

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
-function CompanySetting() {
+function CreateCompanyInfo() {
   const token = localStorage.getItem("token")
   const[userId, setUserId] = useState("")
   const[companyName, setCompanyName] = useState("")
@@ -11,6 +11,7 @@ function CompanySetting() {
   const[description, setDescription] = useState("")
   const[website, setWebsite] = useState("")
   const[approved, setApproved] = useState("PENDING")
+  const navigate = useNavigate()
 
   const handleLoggedInUser = async ()=>{
     const res = await axios.get("http://localhost:8080/api/user/getUserInfo",{
@@ -25,46 +26,12 @@ function CompanySetting() {
     handleLoggedInUser()
   })
 
-  useEffect(() => {
-  const fetchUserAndCompany = async () => {
-    try {
-      const res = await axios.get("http://localhost:8080/api/user/getUserInfo", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const id = res.data.id;
-      setUserId(id);
-
-      const applicantRes = await axios.get(
-        `http://localhost:8080/api/company/getcampanybyid/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = applicantRes.data;
-      setCompanyName(data.companyName || "");
-      setLogoPath(data.logoPath || "");
-      setDescription(data.description || "");
-      setWebsite(data.website || "");
-      
-    } catch (err) {
-      console.error("Failed to fetch user/Company:", err);
-    }
-  };
-
-  fetchUserAndCompany();
-}, []);
-
-
-  const handleCompanyUpdate = async (e)=>{
+  const handleCompany = async (e)=>{
     e.preventDefault()
     try {
-        const res = await axios.put(`http://localhost:8080/api/company/update/${userId}`,
+        const res = await axios.post("http://localhost:8080/api/company/create",
             {
+                userId,
                 companyName,
                 logoPath,
                 description,
@@ -77,18 +44,18 @@ function CompanySetting() {
                 }
             }
         )
-        alert("Company profile Updated Successfull")
+        alert("Company profile created Successfull")
+        navigate("/login")
     } catch (error) {
         console.log("error",error)
     }
   }
 
+  
     
     
   return (
     <div>
-      <Link to="/cdashboard">Go to home</Link>
-      <Link to="/appliedJob">Applied Job</Link>
       <h2>Update Suggestion</h2>
       <form>
         <div>
@@ -112,7 +79,7 @@ function CompanySetting() {
           <label>User Id</label>
           <input value={userId} readOnly />
         </div> */}
-        <button onClick={handleCompanyUpdate}>Update</button>
+        <button onClick={handleCompany}>create</button>
       </form>
 
       
@@ -120,4 +87,4 @@ function CompanySetting() {
   )
 }
 
-export default CompanySetting
+export default CreateCompanyInfo;

@@ -59,6 +59,12 @@ public class CompanyService {
                 .toList();
     }
 
+    public CompanyDto getCompany(Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Companyy not found"));
+        return campanyMapper.toDto(company);
+    }
+
     public Page<CompanyDto> getCampany(Pageable pageable) {
         return companyRepository.findAll(pageable)
                 .map(campanyMapper::toDto);

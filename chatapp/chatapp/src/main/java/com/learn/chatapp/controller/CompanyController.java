@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learn.chatapp.dto.ApplicantDto;
 import com.learn.chatapp.dto.CompanyDto;
 import com.learn.chatapp.exception.UserNotFoundException;
 import com.learn.chatapp.mapper.CampanyMapper;
@@ -84,6 +85,11 @@ public class CompanyController {
     @GetMapping("/get")
     public ResponseEntity<List<CompanyDto>> getAll() {
         return ResponseEntity.ok(companyService.getCampany());
+    }
+
+    @GetMapping("/getcampanybyid/{id}")
+    public ResponseEntity<CompanyDto> getJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(companyService.getCompany(id));
     }
 
     @GetMapping("/page")
